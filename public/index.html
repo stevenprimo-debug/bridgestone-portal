@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bridgestone AV Room Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bs-red: #CC0000;
+  --bs-red-dark: #A30000;
+  --bs-black: #1a1a1a;
+  --bs-white: #FFFFFF;
+  --bs-gray-50: #FAFAFA;
+  --bs-gray-100: #F5F5F5;
+  --bs-gray-200: #EEEEEE;
+  --bs-gray-300: #E0E0E0;
+  --bs-gray-400: #BDBDBD;
+  --bs-gray-500: #9E9E9E;
+  --bs-gray-600: #757575;
+  --bs-gray-700: #555555;
+  --bs-gray-800: #333333;
+  --bs-green: #22C55E;
+  --bs-green-bg: #F0FFF4;
+  --bs-green-text: #166534;
+  --bs-amber: #EAB308;
+  --bs-amber-bg: #FFFBEB;
+  --bs-amber-text: #92400E;
+  --bs-blue-bg: #EFF6FF;
+  --bs-blue-text: #1E40AF;
+  --bs-blue-accent: #3B82F6;
+  --bs-red-bg: #FEF2F2;
+  --bs-red-text: #991B1B;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 100px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bs-gray-50);
+  color: var(--bs-black);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.screen { display: none; min-height: 100vh; animation: fadeIn 0.25s ease; }
+.screen.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes checkDraw {
+  from { stroke-dashoffset: 30; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ===== HEADER ===== */
+.header-red {
+  background: var(--bs-red);
+  padding: 48px 20px 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-red::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-logo {
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot.green { background: #4ADE80; box-shadow: 0 0 6px rgba(74,222,128,0.5); }
+.status-dot.amber { background: #FBBF24; box-shadow: 0 0 6px rgba(251,191,36,0.5); }
+.status-dot.red { background: #F87171; box-shadow: 0 0 6px rgba(248,113,113,0.5); }
+
+.room-name {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.room-location {
+  font-size: 13px;
+  opacity: 0.8;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  padding: 16px 20px 100px;
+  flex: 1;
+}
+
+/* ===== REPORT ISSUE CTA ===== */
+.cta-report {
+  background: var(--bs-black);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: white;
+  font-family: inherit;
+  margin-bottom: 6px;
+}
+
+.cta-report:active {
+  transform: scale(0.98);
+}
+
+.cta-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bs-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cta-text h3 { font-size: 15px; font-weight: 600; margin-bottom: 1px; }
+.cta-text p { font-size: 12px; color: var(--bs-gray-500); }
+
+.cta-arrow {
+  margin-left: auto;
+  color: var(--bs-gray-600);
+}
+
+/* ===== SECTION LABELS ===== */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bs-gray-500);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 22px 0 10px;
+}
+
+/* ===== ROOM INFO CARDS ===== */
+.info-card {
+  background: var(--bs-gray-100);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.info-item:not(:last-child) {
+  border-bottom: 1px solid var(--bs-gray-200);
+}
+
+.info-item svg { flex-shrink: 0; margin-top: 1px; }
+.info-item h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 1px; }
+.info-item p { font-size: 12px; color: var(--bs-gray-600); line-height: 1.4; }
+
+/* ===== STATUS GRID ===== */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.status-tile {
+  border-radius: var(--radius-sm);
+  padding: 12px 6px;
+  text-align: center;
+}
+
+.status-tile .status-dot {
+  margin: 0 auto 5px;
+}
+
+.status-tile h5 { font-size: 11px; font-weight: 600; margin-bottom: 1px; }
+.status-tile p { font-size: 10px; }
+
+.status-tile.green { background: var(--bs-green-bg); }
+.status-tile.green h5, .status-tile.green p { color: var(--bs-green-text); }
+.status-tile.amber { background: var(--bs-amber-bg); }
+.status-tile.amber h5, .status-tile.amber p { color: var(--bs-amber-text); }
+.status-tile.red { background: var(--bs-red-bg); }
+.status-tile.red h5, .status-tile.red p { color: var(--bs-red-text); }
+
+/* ===== REPORT SCREEN ===== */
+.header-light {
+  background: var(--bs-gray-50);
+  padding: 48px 20px 16px;
+  border-bottom: 1px solid var(--bs-gray-200);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--bs-black);
+  cursor: pointer;
+  margin-bottom: 14px;
+  padding: 0;
+}
+
+.room-pill {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  border: 1px solid var(--bs-gray-200);
+}
+
+.room-pill .label { font-size: 11px; color: var(--bs-gray-500); margin-bottom: 2px; }
+.room-pill .value { font-size: 14px; font-weight: 500; }
+
+/* ===== CATEGORY CHIPS ===== */
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: var(--bs-gray-100);
+  border: 1.5px solid var(--bs-gray-200);
+  border-radius: var(--radius-pill);
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bs-gray-700);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip.selected {
+  background: var(--bs-red);
+  border-color: var(--bs-red);
+  color: white;
+}
+
+.chip:active { transform: scale(0.96); }
+
+/* ===== MEDIA INPUT BUTTONS ===== */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.media-btn {
+  background: var(--bs-gray-50);
+  border: 1.5px dashed var(--bs-gray-300);
+  border-radius: var(--radius-md);
+  padding: 18px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.media-btn:active { transform: scale(0.96); border-color: var(--bs-red); }
+.media-btn.has-content { border-style: solid; border-color: var(--bs-red); background: var(--bs-red-bg); }
+.media-btn svg { margin-bottom: 4px; }
+.media-btn span { display: block; font-size: 11px; color: var(--bs-gray-600); font-weight: 500; }
+.media-btn.has-content span { color: var(--bs-red); }
+
+/* ===== TEXT INPUT ===== */
+.text-input {
+  width: 100%;
+  background: var(--bs-gray-100);
+  border: 1.5px solid var(--bs-gray-200);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--bs-black);
+  resize: none;
+  min-height: 80px;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.text-input:focus { border-color: var(--bs-red); }
+.text-input::placeholder { color: var(--bs-gray-400); }
+
+/* ===== SUBMIT BUTTON ===== */
+.btn-submit {
+  width: 100%;
+  background: var(--bs-red);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-submit:active { transform: scale(0.98); background: var(--bs-red-dark); }
+.btn-submit:disabled { background: var(--bs-gray-300); cursor: not-allowed; }
+
+.btn-secondary {
+  width: 100%;
+  background: var(--bs-gray-100);
+  color: var(--bs-gray-700);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:active { transform: scale(0.98); }
+
+.submit-note {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--bs-gray-400);
+  margin-top: 10px;
+}
+
+/* ===== CONFIRMATION SCREEN ===== */
+.confirm-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px 20px;
+  flex: 1;
+}
+
+.confirm-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bs-green-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: scaleIn 0.4s ease;
+}
+
+.confirm-icon svg .check-path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: checkDraw 0.5s ease 0.3s forwards;
+}
+
+.confirm-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.confirm-ticket { font-size: 14px; color: var(--bs-gray-500); margin-bottom: 28px; }
+
+.confirm-details {
+  width: 100%;
+  background: var(--bs-gray-100);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.confirm-row:not(:last-child) { border-bottom: 1px solid var(--bs-gray-200); }
+.confirm-row .label { font-size: 12.5px; color: var(--bs-gray-500); }
+.confirm-row .value { font-size: 12.5px; font-weight: 500; }
+
+.confirm-row .status-pill {
+  background: var(--bs-amber-bg);
+  border-radius: var(--radius-pill);
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bs-amber-text);
+}
+
+.next-steps {
+  width: 100%;
+  background: var(--bs-blue-bg);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.next-steps h4 {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--bs-blue-text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.next-steps p { font-size: 12.5px; color: var(--bs-blue-accent); line-height: 1.5; }
+
+.attachment-card {
+  width: 100%;
+  border: 1px solid var(--bs-gray-200);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.attachment-thumb {
+  width: 48px;
+  height: 48px;
+  background: var(--bs-gray-100);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.attachment-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachment-info h5 { font-size: 12.5px; font-weight: 500; }
+.attachment-info p { font-size: 11px; color: var(--bs-gray-500); }
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 14px 20px;
+  font-size: 10px;
+  color: var(--bs-gray-400);
+  letter-spacing: 0.3px;
+  background: var(--bs-gray-50);
+}
+
+/* ===== RECORDING INDICATOR ===== */
+.recording-indicator {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: var(--bs-red-bg);
+  border: 1.5px solid var(--bs-red);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-top: 10px;
+}
+
+.recording-indicator.active { display: flex; }
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bs-red);
+  animation: pulse 1s infinite;
+}
+
+.recording-indicator span { font-size: 13px; font-weight: 500; color: var(--bs-red); flex: 1; }
+
+.rec-stop {
+  background: var(--bs-red);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bs-black);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== IMAGE PREVIEW ===== */
+.img-preview {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 10px;
+  position: relative;
+  display: none;
+}
+
+.img-preview.active { display: block; }
+
+.img-preview img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.img-preview .remove-img {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN 1: HOME ===== -->
+<div id="screen-home" class="screen active">
+  <div class="header-red">
+    <div class="header-top">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAgAPYDASIAAhEBAxEB/8QAGQABAAIDAAAAAAAAAAAAAAAAAAQHAgUI/8QAKBABAAIBAwMDAwUAAAAAAAAAAAECAwQFEQYSIRMxYQdBUSNxkaLx/8QAGQEBAAIDAAAAAAAAAAAAAAAAAAECBAUG/8QAIxEBAQABAwQBBQAAAAAAAAAAAAECAwQRBRIhMWEGQVGR0f/aAAwDAQACEQMRAD8A41xY75ctMWOO697RWsfmZ9l57V05tGg0GLTRt+lyWpWIvkvii1r248zMyqv6daKNb1ZpO+P09PM57/Hb7f24b7rzre2acm2bLlmuKOa5dTWfN/is/aPn7/t76nfY6mvq46Wn9vNd79L62y6XstXf7uS23txnu3ic3j9zm/CZ1n1FsW2TfRbXtm36jWR4tf0KTTFP8eZ+P8VrkvbJktktx3WmZniIiOZ+I8QxGdt9vjoY8Tzfy5jq/V9bqer35yYyepPU/t+QBkNSAAAAAAAAAAAAAAAAAAAAAAAAAAkaXW6nS4s+LT5Zx11FPTy9vvavPPHP4RwRJJ5WueWUkt8T0AJVAAAAAAAAAAAAAAAAAAAAAAAAAAAAf//Z" class="header-logo" alt="Bridgestone" />
+      <div class="status-badge" id="overall-status">
+        <div class="status-dot green"></div>
+        <span>All systems online</span>
+      </div>
+    </div>
+    <div class="room-name" id="room-name">Firestone conference room</div>
+    <div class="room-location" id="room-location">Floor 12 · Room 1204</div>
+  </div>
+
+  <div class="content">
+    <button class="cta-report" onclick="showScreen('report')">
+      <div class="cta-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <div class="cta-text">
+        <h3>Report an issue</h3>
+        <p>Photo, voice, or text — under 30 sec</p>
+      </div>
+      <svg class="cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="section-label">About this room</div>
+    <div class="info-card" id="room-info">
+      <div class="info-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <div>
+          <h4>Microsoft Teams Room</h4>
+          <p>75" display, PTZ camera, ceiling mic array</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        <div>
+          <h4>Connect your laptop</h4>
+          <p>USB-C cable at center of table shares your screen and joins Teams meetings automatically</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+        <div>
+          <h4>Wireless presentation</h4>
+          <p>ClickShare available — connect wirelessly, no dongle needed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">System status</div>
+    <div class="status-grid" id="status-grid">
+      <div class="status-tile green">
+        <div class="status-dot green"></div>
+        <h5>Display</h5>
+        <p>Online</p>
+      </div>
+      <div class="status-tile green">
+        <div class="status-dot green"></div>
+        <h5>MTR</h5>
+        <p>Online</p>
+      </div>
+      <div class="status-tile green">
+        <div class="status-dot green"></div>
+        <h5>Camera</h5>
+        <p>Online</p>
+      </div>
+      <div class="status-tile amber">
+        <div class="status-dot amber"></div>
+        <h5>Audio</h5>
+        <p>Check</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Powered by Bridgestone IT · Built on Microsoft 365</div>
+</div>
+
+<!-- ===== SCREEN 2: REPORT ===== -->
+<div id="screen-report" class="screen">
+  <div class="header-light">
+    <button class="back-btn" onclick="showScreen('home')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Report an issue
+    </button>
+    <div class="room-pill">
+      <div class="label">Room</div>
+      <div class="value" id="report-room">Firestone conference room · 1204</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="section-label">What's the issue?</div>
+    <div class="chip-grid" id="chip-grid">
+      <button class="chip" data-cat="Display / TV" onclick="selectChip(this)">Display / TV</button>
+      <button class="chip" data-cat="Audio / Speaker" onclick="selectChip(this)">Audio / Speaker</button>
+      <button class="chip" data-cat="Camera" onclick="selectChip(this)">Camera</button>
+      <button class="chip" data-cat="Teams / MTR" onclick="selectChip(this)">Teams / MTR</button>
+      <button class="chip" data-cat="Cable / Input" onclick="selectChip(this)">Cable / Input</button>
+      <button class="chip" data-cat="ClickShare" onclick="selectChip(this)">ClickShare</button>
+      <button class="chip" data-cat="Other" onclick="selectChip(this)">Other</button>
+    </div>
+
+    <div class="section-label">Add details</div>
+    <div class="media-grid">
+      <button class="media-btn" id="btn-photo" onclick="takePhoto()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>Take photo</span>
+      </button>
+      <button class="media-btn" id="btn-voice" onclick="toggleRecording()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        <span>Voice memo</span>
+      </button>
+      <button class="media-btn" id="btn-text" onclick="focusTextArea()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Type it</span>
+      </button>
+    </div>
+
+    <div class="img-preview" id="img-preview">
+      <img id="preview-img" src="" alt="Captured photo" />
+      <button class="remove-img" onclick="removePhoto()">✕</button>
+    </div>
+
+    <div class="recording-indicator" id="recording-indicator">
+      <div class="rec-dot"></div>
+      <span id="rec-timer">Recording... 0:00</span>
+      <button class="rec-stop" onclick="stopRecording()">Stop</button>
+    </div>
+
+    <textarea class="text-input" id="text-details" placeholder="Describe the issue... (optional)" style="margin-top: 14px;" oninput="updateSubmitState()"></textarea>
+
+    <button class="btn-submit" id="btn-submit" style="margin-top: 16px;" onclick="submitTicket()" disabled>Submit ticket</button>
+    <p class="submit-note">No login required · Routed to on-site team instantly</p>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: CONFIRMATION ===== -->
+<div id="screen-confirm" class="screen">
+  <div class="confirm-center">
+    <div class="confirm-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline class="check-path" points="22 4 12 14.01 9 11.01" transform="translate(-4, 2)"/>
+      </svg>
+    </div>
+    <div class="confirm-title">Ticket submitted</div>
+    <div class="confirm-ticket" id="ticket-number">Ticket #BS-2026-0847</div>
+
+    <div class="confirm-details">
+      <div class="confirm-row">
+        <span class="label">Room</span>
+        <span class="value" id="confirm-room">1204 · Firestone</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">Category</span>
+        <span class="value" id="confirm-category">Display / TV</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">Submitted</span>
+        <span class="value" id="confirm-time"></span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">Status</span>
+        <span class="status-pill">Routing to team</span>
+      </div>
+    </div>
+
+    <div class="next-steps">
+      <h4>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        What happens next
+      </h4>
+      <p>The on-site AV team has been notified and will respond shortly. You'll receive automated status updates every 6 hours until resolved.</p>
+    </div>
+
+    <div class="attachment-card" id="confirm-attachment" style="display: none;">
+      <div class="attachment-thumb" id="confirm-thumb">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div class="attachment-info">
+        <h5 id="confirm-file-name">IMG_4821.jpg</h5>
+        <p id="confirm-file-desc">Photo attached</p>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="resetAndHome()" style="margin-top: auto;">Done</button>
+    <p class="submit-note" style="margin-top: 8px;">Ticket saved to room 1204 service history</p>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden file input -->
+<input type="file" id="file-input" accept="image/*" capture="environment" style="display: none;" onchange="handlePhoto(this)" />
+
+<script>
+// ===== ROOM DATA (would come from URL params / API in production) =====
+const roomData = {
+  id: '1204',
+  name: 'Firestone conference room',
+  floor: '12',
+  building: 'Bridgestone Tower',
+  equipment: [
+    { icon: 'display', label: 'Microsoft Teams Room', desc: '75" display, PTZ camera, ceiling mic array' },
+    { icon: 'cable', label: 'Connect your laptop', desc: 'USB-C cable at center of table shares your screen and joins Teams meetings automatically' },
+    { icon: 'wireless', label: 'Wireless presentation', desc: 'ClickShare available — connect wirelessly, no dongle needed' }
+  ],
+  status: [
+    { device: 'Display', state: 'green', text: 'Online' },
+    { device: 'MTR', state: 'green', text: 'Online' },
+    { device: 'Camera', state: 'green', text: 'Online' },
+    { device: 'Audio', state: 'amber', text: 'Check' }
+  ]
+};
+
+// ===== STATE =====
+let selectedCategory = null;
+let capturedPhoto = null;
+let hasVoiceMemo = false;
+let isRecording = false;
+let recordingTimer = null;
+let recordingSeconds = 0;
+let mediaRecorder = null;
+
+// ===== NAVIGATION =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ===== CATEGORY SELECTION =====
+function selectChip(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCategory = el.dataset.cat;
+  updateSubmitState();
+}
+
+// ===== PHOTO CAPTURE =====
+function takePhoto() {
+  document.getElementById('file-input').click();
+}
+
+function handlePhoto(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    capturedPhoto = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('preview-img').src = e.target.result;
+      document.getElementById('img-preview').classList.add('active');
+      document.getElementById('btn-photo').classList.add('has-content');
+      document.getElementById('btn-photo').querySelector('span').textContent = 'Photo added';
+      updateSubmitState();
+      showToast('Photo captured');
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removePhoto() {
+  capturedPhoto = null;
+  document.getElementById('img-preview').classList.remove('active');
+  document.getElementById('btn-photo').classList.remove('has-content');
+  document.getElementById('btn-photo').querySelector('span').textContent = 'Take photo';
+  document.getElementById('file-input').value = '';
+  updateSubmitState();
+}
+
+// ===== VOICE RECORDING =====
+async function toggleRecording() {
+  if (isRecording) {
+    stopRecording();
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.start();
+    isRecording = true;
+    recordingSeconds = 0;
+    document.getElementById('recording-indicator').classList.add('active');
+    document.getElementById('btn-voice').classList.add('has-content');
+    updateRecTimer();
+    recordingTimer = setInterval(updateRecTimer, 1000);
+    showToast('Recording started');
+  } catch (err) {
+    showToast('Microphone access needed');
+  }
+}
+
+function updateRecTimer() {
+  recordingSeconds++;
+  const mins = Math.floor(recordingSeconds / 60);
+  const secs = (recordingSeconds % 60).toString().padStart(2, '0');
+  document.getElementById('rec-timer').textContent = `Recording... ${mins}:${secs}`;
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach(t => t.stop());
+  }
+  isRecording = false;
+  hasVoiceMemo = true;
+  clearInterval(recordingTimer);
+  document.getElementById('recording-indicator').classList.remove('active');
+  document.getElementById('btn-voice').querySelector('span').textContent = 'Memo saved';
+  updateSubmitState();
+  showToast('Voice memo saved');
+}
+
+// ===== TEXT INPUT =====
+function focusTextArea() {
+  document.getElementById('text-details').focus();
+}
+
+// ===== SUBMIT STATE =====
+function updateSubmitState() {
+  const hasCategory = selectedCategory !== null;
+  const hasAnyDetail = capturedPhoto || hasVoiceMemo || document.getElementById('text-details').value.trim().length > 0;
+  document.getElementById('btn-submit').disabled = !hasCategory;
+}
+
+// ===== SUBMIT =====
+function submitTicket() {
+  const ticketNum = 'BS-2026-' + String(Math.floor(Math.random() * 9000) + 1000);
+  const now = new Date();
+  const timeStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  document.getElementById('ticket-number').textContent = 'Ticket #' + ticketNum;
+  document.getElementById('confirm-room').textContent = roomData.id + ' · ' + roomData.name.split(' ')[0];
+  document.getElementById('confirm-category').textContent = selectedCategory;
+  document.getElementById('confirm-time').textContent = timeStr;
+
+  if (capturedPhoto) {
+    document.getElementById('confirm-attachment').style.display = 'flex';
+    document.getElementById('confirm-file-name').textContent = capturedPhoto.name || 'IMG_capture.jpg';
+    const thumbEl = document.getElementById('confirm-thumb');
+    const previewSrc = document.getElementById('preview-img').src;
+    if (previewSrc) {
+      thumbEl.innerHTML = '<img src="' + previewSrc + '" alt="attachment" />';
+    }
+  } else if (hasVoiceMemo) {
+    document.getElementById('confirm-attachment').style.display = 'flex';
+    document.getElementById('confirm-file-name').textContent = 'Voice memo';
+    document.getElementById('confirm-file-desc').textContent = recordingSeconds + 's audio recording';
+  }
+
+  showScreen('confirm');
+}
+
+// ===== RESET =====
+function resetAndHome() {
+  selectedCategory = null;
+  capturedPhoto = null;
+  hasVoiceMemo = false;
+  recordingSeconds = 0;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('text-details').value = '';
+  document.getElementById('img-preview').classList.remove('active');
+  document.getElementById('btn-photo').classList.remove('has-content');
+  document.getElementById('btn-photo').querySelector('span').textContent = 'Take photo';
+  document.getElementById('btn-voice').classList.remove('has-content');
+  document.getElementById('btn-voice').querySelector('span').textContent = 'Voice memo';
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('confirm-attachment').style.display = 'none';
+  document.getElementById('file-input').value = '';
+  showScreen('home');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// ===== URL PARAMS (production: QR code would include room ID) =====
+const params = new URLSearchParams(window.location.search);
+const roomId = params.get('room') || '1204';
+</script>
+
+</body>
+</html>
